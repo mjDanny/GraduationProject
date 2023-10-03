@@ -10,7 +10,11 @@ app.config['SECRET_KEY'] = 'very secret key'
 
 @app.route('/')
 def index():
-    return render_template('index.html', title='DR')
+    db_sess = db_session.create_session()
+    stuffs = db_sess.query(Stuffs).filter(Stuffs.id >= 1)
+    return render_template('index.html',
+                           title='DS',
+                           stuffs=stuffs)
 
 
 if __name__ == '__main__':

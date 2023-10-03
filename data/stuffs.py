@@ -11,7 +11,7 @@ class Stuffs(SqlAlchemyBase):
                            autoincrement=True)
     title = sqlalchemy.Column(sqlalchemy.String,
                               nullable=False)
-    pic = sqlalchemy.Column(sqlalchemy.Integer,
+    pic = sqlalchemy.Column(sqlalchemy.String,
                             nullable=False)
     price = sqlalchemy.Column(sqlalchemy.Integer,
                               nullable=False)

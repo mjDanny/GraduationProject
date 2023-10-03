@@ -2,4 +2,17 @@
 
 {% block main_content %}
 <title>{{ title }}</title>
+<div class="container"><!--Выводим список товаров-->
+    <table>
+        {% for item in stuffs %}
+            <tr>
+                <td>
+                    <h2>{{ item.title }}</h2>
+                    <img src="/static/images/{{ item.pic }}">
+                    <p>{{ item.price }}</p>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+</div>
 {% endblock %}
