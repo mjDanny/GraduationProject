@@ -18,7 +18,7 @@ class Stuffs(SqlAlchemyBase):
     # Привяжем таблицу материалов к пользователям (Создаём внешний ключ)
     user_id = sqlalchemy.Column(sqlalchemy.Integer,
                                 sqlalchemy.ForeignKey("Users.id"))
-    user = orm.relationship("Users")
+    user = orm.relationship("User")
 
     def get_title(self):
         return self.title
