@@ -2,9 +2,11 @@ import sqlalchemy
 from sqlalchemy import orm
 
 from .db_session import SqlAlchemyBase
+from flask_login import UserMixin
+from sqlalchemy_serializer import SerializerMixin
 
 
-class Stuffs(SqlAlchemyBase):
+class Stuffs(SqlAlchemyBase, UserMixin, SerializerMixin):
     __tablename__ = 'Stuffs'
     id = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True,
