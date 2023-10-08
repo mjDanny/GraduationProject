@@ -2,7 +2,7 @@
 
 {% block main_content %}
 <title>{{ title }}</title>
-<div class="container" >
+<div class="container">
     <div class="card-deck mb-3 text-center ">
         <div class="row" style="display: flex; flex-flow: row wrap;">
             {% for item in stuffs %}
@@ -15,6 +15,22 @@
                     </div>
                     <div class="card-header">
                         <h3 class="card-title pricing-card-title">{{ item.title }}</h3>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mt-3 mb-4" style="font-weight: bold">$ {{ item.price }}</ul>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            {% for item in image %}
+            <div class="col" style="flex-basis: 25%">
+                <div class="card mb-4 shadow-sm p-1 border bg-light rounded">
+                    <div style="height: 170px;" class="text-center">
+                        <img style="height: 170px;" src="{{ item.path }}" class="border border-light rounded img-fluid"
+                             alt="{{ item.id }}">
+                    </div>
+                    <div class="card-header">
+                        <h3 class="card-title pricing-card-title">{{ item.name }}</h3>
                     </div>
                     <div class="card-body">
                         <ul class="list-unstyled mt-3 mb-4" style="font-weight: bold">$ {{ item.price }}</ul>

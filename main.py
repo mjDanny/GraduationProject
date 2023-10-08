@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, render_template, redirect, request, url_for
+from flask import Flask, render_template, redirect, request, url_for, flash
 from werkzeug.utils import secure_filename
 
 from data import db_session
@@ -16,12 +16,11 @@ app.config['SECRET_KEY'] = 'very secret key'
 login_manager = LoginManager()
 login_manager.init_app(app)
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
-app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg'}
+app.config['ALLOWED_EXTENSIONS'] = {'png'}
 
 
 def allowed_file(filename):
-    return '.' in filename and \
-        filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
 
 @app.route('/upload', methods=['GET', 'POST'])
@@ -30,13 +29,15 @@ def upload():
         if 'file' not in request.files:
             return redirect(request.url)
         file = request.files['file']
+        price = request.form['price']
+        name = request.form['name']
         if file.filename == '':
             return redirect(request.url)
         db_sess = db_session.create_session()
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            new_image = Image(name=filename, path=os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            new_image = Image(name=name, price=price, path=os.path.join(app.config['UPLOAD_FOLDER'], filename))
             db_sess.add(new_image)
             db_sess.commit()
             return redirect(url_for('index'))
@@ -57,11 +58,14 @@ def index():
     db_sess = db_session.create_session()
     if current_user.is_authenticated:
         stuffs = db_sess.query(Stuffs).filter(Stuffs.id >= 0)
+        image = db_sess.query(Image).filter(Image.id >= 0)
     else:
         stuffs = db_sess.query(Stuffs).filter(Stuffs.id >= 0)
+        image = db_sess.query(Image).filter(Image.id >= 0)
     return render_template('index.html',
                            title='DS',
                            stuffs=stuffs,
+                           image=image,
                            username='Авторизация')
 
 

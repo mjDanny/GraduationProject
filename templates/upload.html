@@ -3,7 +3,14 @@
 {% block main_content %}
 <h1>Upload Image</h1>
     <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data">
-        <input type="file" name="file">
-        <input type="submit" value="Upload">
+        <label for="name">Name:</label>
+    <input type="text" name="name" id="name">
+    <br>
+    <label for="price">Price:</label>
+    <input type="number" name="price" id="price">
+    <br>
+    <input type="file" name="file">
+    <br>
+    <input type="submit" value="Upload">
     </form>
 {% endblock %}
