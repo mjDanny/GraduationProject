@@ -1,6 +1,10 @@
-from flask import Flask, render_template, redirect, request
+import os
+
+from flask import Flask, render_template, redirect, request, url_for
+from werkzeug.utils import secure_filename
 
 from data import db_session
+from data.image import Image
 from data.stuffs import Stuffs
 from data.users import User
 from forms.user import RegisterForm
@@ -11,6 +15,34 @@ app = Flask(__name__)  # создали экземпляр приложения
 app.config['SECRET_KEY'] = 'very secret key'
 login_manager = LoginManager()
 login_manager.init_app(app)
+app.config['UPLOAD_FOLDER'] = 'static/uploads'
+app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg'}
+
+
+def allowed_file(filename):
+    return '.' in filename and \
+        filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
+
+
+@app.route('/upload', methods=['GET', 'POST'])
+def upload():
+    if request.method == 'POST':
+        if 'file' not in request.files:
+            return redirect(request.url)
+        file = request.files['file']
+        if file.filename == '':
+            return redirect(request.url)
+        db_sess = db_session.create_session()
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            new_image = Image(name=filename, path=os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            db_sess.add(new_image)
+            db_sess.commit()
+            return redirect(url_for('index'))
+        else:
+            return redirect(request.url)
+    return render_template('upload.html')
 
 
 @login_manager.user_loader
