@@ -2,23 +2,25 @@
 
 {% block main_content %}
 <h1 align="center">Авторизация</h1>
+<div align="center">
     <form class="container" action="" method="post" novalidate>
         {{ form.hidden_tag() }}
-        <p>
-        {{ form.username.label }}<br>
-        {{ form.username(class="form-control")}}<br>
-        {% for error in form.username.errors %}
+        <p align="center" style="width: 300px;">
+            {{ form.username.label }}<br>
+            {{ form.username(class="form-control")}}<br>
+            {% for error in form.username.errors %}
         <div class="alert alert-danger" role="alert">{{ error }}</div>
         {% endfor %}
         </p>
-        <p>
-        {{ form.password.label }}<br>
-        {{ form.password(class="form-control", type="password")}}<br>
-        {% for error in form.password.errors %}
+        <p align="center" style="width: 300px;">
+            {{ form.password.label }}<br>
+            {{ form.password(class="form-control", type="password")}}<br>
+            {% for error in form.password.errors %}
         <div class="alert alert-danger" role="alert">{{ error }}</div>
         {% endfor %}
         </p>
-        <p>{{ form.remember_me() }}&nbsp;{{form.remember_me.label }}</p>
-        <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+        <p align="center">{{ form.remember_me() }}&nbsp;{{form.remember_me.label }}</p>
+        <p align="center">{{ form.submit(type="submit", class="btn btn-primary") }}</p>
     </form>
+</div>
 {% endblock %}
