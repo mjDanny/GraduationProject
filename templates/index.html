@@ -18,22 +18,9 @@
                     </div>
                     <div class="card-body">
                         <ul class="list-unstyled mt-3 mb-4" style="font-weight: bold">$ {{ item.price }}</ul>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-            {% for item in image %}
-            <div class="col" style="flex-basis: 25%">
-                <div class="card mb-4 shadow-sm p-1 border bg-light rounded">
-                    <div style="height: 170px;" class="text-center">
-                        <img style="height: 170px;" src="{{ item.path }}" class="border border-light rounded img-fluid"
-                             alt="{{ item.id }}">
-                    </div>
-                    <div class="card-header">
-                        <h3 class="card-title pricing-card-title">{{ item.name }}</h3>
-                    </div>
-                    <div class="card-body">
-                        <ul class="list-unstyled mt-3 mb-4" style="font-weight: bold">$ {{ item.price }}</ul>
+                        {% if current_user.is_authenticated %}<!--Вот это мне надо-->
+                        <a href="/download/{{ item.id }}" class="btn btn-lg btn-block btn-outline-primary">Скачать</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>

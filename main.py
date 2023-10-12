@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, render_template, redirect, request, url_for, flash
+from flask import Flask, render_template, redirect, request, url_for, flash, send_from_directory
 from werkzeug.utils import secure_filename
 
 from data import db_session
@@ -15,7 +15,7 @@ app = Flask(__name__)  # создали экземпляр приложения
 app.config['SECRET_KEY'] = 'very secret key'
 login_manager = LoginManager()
 login_manager.init_app(app)
-app.config['UPLOAD_FOLDER'] = 'static/uploads'
+app.config['UPLOAD_FOLDER'] = 'static/images'
 app.config['ALLOWED_EXTENSIONS'] = {'png'}
 
 
@@ -44,6 +44,17 @@ def upload():
         else:
             return redirect(request.url)
     return render_template('upload.html')
+
+
+@app.route('/download/<int:id>')
+@login_required
+def item_download(id):
+    db_sess = db_session.create_session()
+    item = db_sess.query(Stuffs).filter(Stuffs.id == id).first()
+    file_name = item.pic
+    full_path = os.path.join(app.root_path, app.config['UPLOAD_FOLDER'])
+    db_sess.commit()
+    return send_from_directory(full_path, file_name, as_attachment=True)
 
 
 @login_manager.user_loader

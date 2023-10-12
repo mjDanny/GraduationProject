@@ -22,5 +22,8 @@ class Stuffs(SqlAlchemyBase, UserMixin, SerializerMixin):
                                 sqlalchemy.ForeignKey("Users.id"))
     user = orm.relationship("User")
 
+    def __repr__(self):
+        return f"<Stuffs id={self.id} title='{self.title}'>"
+
     def get_title(self):
         return self.title
