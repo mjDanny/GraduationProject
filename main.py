@@ -10,9 +10,11 @@ from data.users import User
 from forms.user import RegisterForm
 from forms.loginform import LoginForm
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
+from admin.admin import admin
 
 app = Flask(__name__)  # создали экземпляр приложения
 app.config['SECRET_KEY'] = 'very secret key'
+app.register_blueprint(admin, url_prefix='/admin')
 login_manager = LoginManager()
 login_manager.init_app(app)
 app.config['UPLOAD_FOLDER'] = 'static/images'
