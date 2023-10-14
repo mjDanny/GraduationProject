@@ -23,8 +23,8 @@
       <td>{{ stuff.path }}</td>
       <td>{{ stuff.price }}</td>
       <td>
-       <a href="{{ url_for('admin.stuffs', stuff_id=stuff.id) }}">Редактировать</a>
-        <a href="{{ url_for('admin.stuffs', stuff_id=stuff.id) }}" onclick="return confirm('Вы уверены?')">Удалить</a>
+       <a href="{{ url_for('admin.stuffs', file_id=stuff.id) }}">Редактировать</a>
+        <a href="{{ url_for('admin.delete_file', file_id=stuff.id) }}" onclick="return confirm('Вы уверены?')">Удалить</a>
       </td>
     </tr>
     {% endfor %}

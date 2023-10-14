@@ -57,3 +57,18 @@ def stuffs():
     db_sess = db_session.create_session()
     stuffs_list = db_sess.query(Image)
     return render_template('admin/stuffs.html', title='Управление товарами', menu=menu, stuffs=stuffs_list)
+
+
+@admin.route('/files/delete/<int:file_id>', methods=['POST'])
+def delete_file(file_id):
+    if not isLogged():
+        return redirect(url_for('.login'))
+    db_sess = db_session.create_session()
+    file = db_sess.query(Image).get(file_id)
+
+    db_sess.delete(file)
+    db_sess.commit()
+
+    flash('Файл удален успешно!', 'success')
+
+    return redirect(url_for('.files'))
