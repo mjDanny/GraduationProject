@@ -1,6 +1,6 @@
-import sqlite3
-
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, g
+from data.image import Image
+from data import db_session
 
 admin = Blueprint('admin', __name__, template_folder='templates', static_folder='static')
 
@@ -17,8 +17,7 @@ def logout_admin():
     session.pop('admin_logged', None)
 
 
-menu = [{'url': '.index', 'title': 'Панель'},
-        {'url': '.logout', 'title': 'Выйти'}]
+menu = [{'url': '.logout', 'title': 'Выйти'}]
 db = None
 
 
@@ -48,3 +47,13 @@ def logout():
         return redirect(url_for('.login'))
     logout_admin()
     return redirect(url_for('.login'))
+
+
+# Декоратор управления таблицей stuffs
+@admin.route('/stuffs')
+def stuffs():
+    if not isLogged():
+        return redirect(url_for('.login'))
+    db_sess = db_session.create_session()
+    stuffs_list = db_sess.query(Image)
+    return render_template('admin/stuffs.html', title='Управление товарами', menu=menu, stuffs=stuffs_list)

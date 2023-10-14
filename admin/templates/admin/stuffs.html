@@ -1,0 +1,33 @@
+{% extends 'admin/base_admin.html' %}
+
+{% block content %}
+<h1>Управление товарами</h1>
+
+<a href="{{ url_for('admin.stuffs') }}">Добавить товар</a>
+
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Название</th>
+      <th>Фото</th>
+      <th>Цена</th>
+      <th>Действия</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for stuff in stuffs %}
+    <tr>
+      <td>{{ stuff.id }}</td>
+      <td>{{ stuff.name }}</td>
+      <td>{{ stuff.path }}</td>
+      <td>{{ stuff.price }}</td>
+      <td>
+       <a href="{{ url_for('admin.stuffs', stuff_id=stuff.id) }}">Редактировать</a>
+        <a href="{{ url_for('admin.stuffs', stuff_id=stuff.id) }}" onclick="return confirm('Вы уверены?')">Удалить</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
