@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, render_template, redirect, request, url_for, flash, send_from_directory
+from flask import Flask, render_template, redirect, request, url_for, flash, send_from_directory, send_file
 from werkzeug.utils import secure_filename
 
 from data import db_session
@@ -50,13 +50,19 @@ def upload():
 
 @app.route('/download/<int:id>')
 @login_required
-def item_download(id):
+def file_download(id):
+    # Получаем файл из базы данных по идентификатору
     db_sess = db_session.create_session()
-    item = db_sess.query(Stuffs).filter(Stuffs.id == id).first()
-    file_name = item.pic
-    full_path = os.path.join(app.root_path, app.config['UPLOAD_FOLDER'])
-    db_sess.commit()
-    return send_from_directory(full_path, file_name, as_attachment=True)
+    item = db_sess.query(Image).filter(Image.id == id).first()
+
+    if not item:
+        return "Файл не найден"
+
+    # Определяем путь к файлу на сервере
+    full_path = os.path.join(app.root_path, item.path)
+
+    # Отправляем файл для скачивания
+    return send_file(full_path, as_attachment=True)
 
 
 @login_manager.user_loader
