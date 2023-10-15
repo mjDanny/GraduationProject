@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session, g
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from data.image import Image
 from data import db_session
 
@@ -17,7 +17,8 @@ def logout_admin():
     session.pop('admin_logged', None)
 
 
-menu = [{'url': '.logout', 'title': 'Выйти'}]
+menu = [{'url': '.logout', 'title': 'Выйти'},
+        {'url': '.stuffs', 'title': 'Stuffs'}]
 db = None
 
 
@@ -59,7 +60,7 @@ def stuffs():
     return render_template('admin/stuffs.html', title='Управление товарами', menu=menu, stuffs=stuffs_list)
 
 
-@admin.route('/files/delete/<int:file_id>', methods=['POST'])
+@admin.route('/files/delete/<int:file_id>', methods=['GET'])
 def delete_file(file_id):
     if not isLogged():
         return redirect(url_for('.login'))
@@ -71,4 +72,4 @@ def delete_file(file_id):
 
     flash('Файл удален успешно!', 'success')
 
-    return redirect(url_for('.files'))
+    return redirect(url_for('admin.stuffs'))
