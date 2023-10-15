@@ -60,7 +60,27 @@ def stuffs():
     return render_template('admin/stuffs.html', title='Управление товарами', menu=menu, stuffs=stuffs_list)
 
 
-@admin.route('/files/delete/<int:file_id>', methods=['GET'])
+@admin.route('/files/edit/<int:file_id>', methods=['GET', 'POST'])
+def edit_file(file_id):
+    db_sess = db_session.create_session()
+    file = db_sess.query(Image).get(file_id)
+
+    if not file:
+        flash('Файл не найден', 'error')
+        return redirect(url_for('.files'))
+
+    if request.method == 'POST':
+        # Обновляем информацию о файле на основе данных из POST-запроса
+        file.name = request.form.get('name')
+        file.price = request.form.get('price')
+        db_sess.commit()
+        flash('Информация о файле успешно обновлена!', 'success')
+        return redirect(url_for('admin.stuffs'))
+
+    return render_template('admin/edit_file.html', file=file)
+
+
+@admin.route('/files/delete/<int:file_id>', methods=['GET'])  # Удаление файла из панели админа
 def delete_file(file_id):
     if not isLogged():
         return redirect(url_for('.login'))
