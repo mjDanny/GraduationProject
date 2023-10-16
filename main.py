@@ -117,7 +117,7 @@ def registration():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        redirect('/')
+        return redirect('/')
     else:
         form = LoginForm()
         if form.validate_on_submit():
@@ -126,9 +126,9 @@ def login():
             if user and user.check_password(form.password.data):
                 login_user(user, remember=form.remember_me.data)
                 return redirect('/')
-            render_template('login.html', title='Авторизация',
-                            message='Неверный логин или пароль',
-                            form=form)
+            else:
+                flash('Неверный логин или пароль', 'error')
+
         return render_template('login.html', title='Авторизация', form=form)
 
 
