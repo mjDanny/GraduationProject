@@ -1,0 +1,31 @@
+{% extends 'admin/base_admin.html' %}
+
+{% block content %}
+<div class="container">
+    <h1 align="center">Управление пользователями</h1>
+    <table align="center">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Имя</th>
+            <th>Почта</th>
+            <th>Действия</th>
+        </tr>
+        </thead>
+        {% for user in users %}
+        <tr>
+            <td>{{ user.id }}</td>
+            <td>{{ user.name }}</td>
+            <td>{{ user.email }}</td>
+            <td>
+                <a class="btn btn-primary" href="{{ url_for('admin.edit_user', user_id=user.id) }}">Редактировать</a>
+                <a class="btn btn-danger" href="{{ url_for('admin.delete_user', user_id=user.id) }}"
+                   onclick="return confirm('Вы уверены?')">Удалить</a>
+
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
