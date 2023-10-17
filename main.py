@@ -1,18 +1,20 @@
 import os
 
-from flask import Flask, render_template, redirect, request, url_for, flash, send_from_directory, send_file
+from flask import Flask, render_template, redirect, request, url_for, flash, send_file
+from flask_login import LoginManager, login_user, current_user, login_required, logout_user
 from werkzeug.utils import secure_filename
 
 from data import db_session
 from data.image import Image
 from data.stuffs import Stuffs
 from data.users import User
+
 from forms.user import RegisterForm
 from forms.loginform import LoginForm
-from flask_login import LoginManager, login_user, current_user, login_required, logout_user
+
 from admin.admin import admin
 
-app = Flask(__name__)  # создали экземпляр приложения
+app = Flask(__name__)
 app.config['SECRET_KEY'] = 'very secret key'
 app.register_blueprint(admin, url_prefix='/admin')
 login_manager = LoginManager()
