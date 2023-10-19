@@ -2,7 +2,7 @@ import os
 import zipfile
 from flask import Flask, render_template, redirect, request, url_for, flash, send_file
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
-from flask_paginate import Pagination, get_page_args
+from flask_paginate import Pagination
 from werkzeug.utils import secure_filename
 
 from data import db_session
@@ -57,7 +57,7 @@ def index(page=1):
     except:
         total = 0
 
-    # Настройка объекта pagination
+    # Настройка пагинации
     pagination = Pagination(page=page, total=total, per_page=PERPAGE, search=False, bs_version=3)
 
     return render_template('index.html',
@@ -68,6 +68,25 @@ def index(page=1):
                            per_page=PERPAGE,
                            pagination=pagination,
                            username='Авторизация')
+
+
+@app.route('/dialog', methods=['GET', 'POST'])
+def process_dialog():
+    if request.method == 'POST':
+        user_input = request.form.get('user_input')
+
+        if user_input == 'Привет':
+            response = 'Привет! Как я могу помочь тебе? 😊'
+        elif user_input == 'Пока':
+            response = 'До свидания! Удачи! 👋'
+        elif user_input == 'Как дела?':
+            response = 'Всё хорошо, пишу дипломный проект :)'
+        else:
+            response = 'Не понимаю, что ты имеешь в виду. 😕'
+
+        return render_template('response.html', response=response)
+
+    return render_template('template.html')
 
 
 @app.route('/upload', methods=['GET', 'POST'])
@@ -125,14 +144,14 @@ def zip_upload():
 @app.route('/download/<int:id>')
 @login_required
 def file_download(id):
-    # Получаем файл из базы данных по идентификатору
+    # Получаем файл из базы данных по id
     db_sess = db_session.create_session()
     item = db_sess.query(Image).filter(Image.id == id).first()
 
     if not item:
         return "Файл не найден"
 
-    # Определяем путь к файлу на сервере
+    # Определяем путь к файлу
     full_path = os.path.join(app.root_path, item.path)
 
     # Отправляем файл для скачивания
