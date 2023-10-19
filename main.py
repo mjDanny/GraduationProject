@@ -8,6 +8,7 @@ from data import db_session
 from data.image import Image
 from data.stuffs import Stuffs
 from data.users import User
+from data.zip import Zip
 
 from forms.user import RegisterForm
 from forms.loginform import LoginForm
@@ -20,7 +21,8 @@ app.register_blueprint(admin, url_prefix='/admin')
 login_manager = LoginManager()
 login_manager.init_app(app)
 app.config['UPLOAD_FOLDER'] = 'static/images'
-app.config['ALLOWED_EXTENSIONS'] = {'png'}
+app.config['UPLOAD_ZIP_FOLDER'] = 'static/uploads'
+app.config['ALLOWED_EXTENSIONS'] = {'png', 'zip'}
 PERPAGE = 8
 
 
@@ -88,6 +90,28 @@ def upload():
         else:
             return redirect(request.url)
     return render_template('upload.html')
+
+
+@app.route('/zip', methods=['GET', 'POST'])
+def zip_upload():
+    if request.method == 'POST':
+        if 'file' not in request.files:
+            return redirect(request.url)
+        file = request.files['file']
+        name = request.form['name']
+        if file.filename == '':
+            return redirect(request.url)
+        db_sess = db_session.create_session()
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_ZIP_FOLDER'], filename))
+            new_zip = Zip(name=name, path=os.path.join(app.config['UPLOAD_ZIP_FOLDER'], filename))
+            db_sess.add(new_zip)
+            db_sess.commit()
+            return redirect(url_for('index'))  # создать страницу, где будут изображения из зип архивов
+        else:
+            return redirect(request.url)
+    return render_template('zip.html')
 
 
 @app.route('/download/<int:id>')

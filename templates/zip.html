@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block main_content %}
+<div class="container" align="center">
+    <h1>Загрузка zip файла</h1>
+    <form action="{{ url_for('zip_upload') }}" method="post" enctype="multipart/form-data">
+        <label for="name">Name:</label>
+        <input class="form-control" style="width: 300px;" type="text" name="name" id="name">
+        <br>
+        <input class="form-control" style="width: 300px;" type="file" name="file">
+        <br>
+        <input class="form-control" style="width: 300px;" type="submit" value="Upload">
+    </form>
+</div>
+{% endblock %}
