@@ -115,13 +115,6 @@ def zip_upload():
                 extracted_path = os.path.join(app.config['UPLOAD_ZIP_FOLDER'], 'extracted')
                 zip_ref.extractall(extracted_path)
 
-            # Получение списка изображений и передача на отдельную страницу
-            images = []
-            for root, dirs, files in os.walk(extracted_path):
-                for file in files:
-                    if file.lower().endswith(('.png', '.jpg', '.jpeg', '.gif')):
-                        images.append(file)
-
             return redirect('index')
 
         else:
