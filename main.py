@@ -1,6 +1,7 @@
 import os
 from flask import Flask, render_template, redirect, request, url_for, flash, send_file
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
+from flask_paginate import Pagination, get_page_args
 from werkzeug.utils import secure_filename
 
 from data import db_session
@@ -20,6 +21,7 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 app.config['UPLOAD_FOLDER'] = 'static/images'
 app.config['ALLOWED_EXTENSIONS'] = {'png'}
+PERPAGE = 8
 
 
 def allowed_file(filename):
@@ -33,7 +35,13 @@ def load_user(user_id):
 
 
 @app.route('/')
-def index():
+@app.route('/index', methods=['GET', 'POST'])
+@app.route('/index/<int:page>', methods=['GET', 'POST'])
+def index(page=1):
+    if request.method == 'POST':
+        pass
+    offset = PERPAGE * (page - 1)
+    total = 0
     db_sess = db_session.create_session()
     if current_user.is_authenticated:
         stuffs = db_sess.query(Stuffs).filter(Stuffs.id >= 0)
@@ -41,10 +49,21 @@ def index():
     else:
         stuffs = db_sess.query(Stuffs).filter(Stuffs.id >= 0)
         image = db_sess.query(Image).filter(Image.id >= 0)
+    try:
+        total = image.count()
+    except:
+        total = 0
+
+    # Настройка объекта pagination
+    pagination = Pagination(page=page, total=total, per_page=PERPAGE, search=False, bs_version=3)
+
     return render_template('index.html',
                            title='DS',
                            stuffs=stuffs,
                            image=image,
+                           data=image[offset: offset + PERPAGE],
+                           per_page=PERPAGE,
+                           pagination=pagination,
                            username='Авторизация')
 
 
