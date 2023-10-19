@@ -92,11 +92,12 @@ def delete_user(user_id):
     if not isLogged():
         return redirect(url_for('.login'))
     db_sess = db_session.create_session()
-    user  = db_sess.query(User).get(user_id)
+    user = db_sess.query(User).get(user_id)
     db_sess.delete(user)
     db_sess.commit()
     flash('Пользователь успешно удалён', 'success')
     return redirect(url_for('admin.users'))
+
 
 @admin.route('/files/edit/<int:file_id>', methods=['GET', 'POST'])
 def edit_file(file_id):
