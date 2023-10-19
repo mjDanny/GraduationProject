@@ -21,6 +21,7 @@ login_manager.init_app(app)
 app.config['UPLOAD_FOLDER'] = 'static/images'
 app.config['ALLOWED_EXTENSIONS'] = {'png'}
 
+
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
@@ -33,7 +34,6 @@ def load_user(user_id):
 
 @app.route('/')
 def index():
-    found = request.args.get('substring')
     db_sess = db_session.create_session()
     if current_user.is_authenticated:
         stuffs = db_sess.query(Stuffs).filter(Stuffs.id >= 0)
