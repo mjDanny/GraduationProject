@@ -1,4 +1,5 @@
 import os
+import zipfile
 from flask import Flask, render_template, redirect, request, url_for, flash, send_file
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
 from flask_paginate import Pagination, get_page_args
@@ -22,7 +23,7 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 app.config['UPLOAD_FOLDER'] = 'static/images'
 app.config['UPLOAD_ZIP_FOLDER'] = 'static/uploads'
-app.config['ALLOWED_EXTENSIONS'] = {'png', 'zip'}
+app.config['ALLOWED_EXTENSIONS'] = {'png', 'zip', 'jpg', 'jpeg'}
 PERPAGE = 8
 
 
@@ -108,7 +109,21 @@ def zip_upload():
             new_zip = Zip(name=name, path=os.path.join(app.config['UPLOAD_ZIP_FOLDER'], filename))
             db_sess.add(new_zip)
             db_sess.commit()
-            return redirect(url_for('index'))  # создать страницу, где будут изображения из зип архивов
+
+            # Распаковка zip архива
+            with zipfile.ZipFile(os.path.join(app.config['UPLOAD_ZIP_FOLDER'], filename), 'r') as zip_ref:
+                extracted_path = os.path.join(app.config['UPLOAD_ZIP_FOLDER'], 'extracted')
+                zip_ref.extractall(extracted_path)
+
+            # Получение списка изображений и передача на отдельную страницу
+            images = []
+            for root, dirs, files in os.walk(extracted_path):
+                for file in files:
+                    if file.lower().endswith(('.png', '.jpg', '.jpeg', '.gif')):
+                        images.append(file)
+
+            return redirect('index')
+
         else:
             return redirect(request.url)
     return render_template('zip.html')
