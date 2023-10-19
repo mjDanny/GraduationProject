@@ -1,5 +1,4 @@
 import os
-
 from flask import Flask, render_template, redirect, request, url_for, flash, send_file
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
 from werkzeug.utils import secure_filename
@@ -22,9 +21,31 @@ login_manager.init_app(app)
 app.config['UPLOAD_FOLDER'] = 'static/images'
 app.config['ALLOWED_EXTENSIONS'] = {'png'}
 
-
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    db_ses = db_session.create_session()
+    return db_ses.get(User, user_id)
+
+
+@app.route('/')
+def index():
+    found = request.args.get('substring')
+    db_sess = db_session.create_session()
+    if current_user.is_authenticated:
+        stuffs = db_sess.query(Stuffs).filter(Stuffs.id >= 0)
+        image = db_sess.query(Image).filter(Image.id >= 0)
+    else:
+        stuffs = db_sess.query(Stuffs).filter(Stuffs.id >= 0)
+        image = db_sess.query(Image).filter(Image.id >= 0)
+    return render_template('index.html',
+                           title='DS',
+                           stuffs=stuffs,
+                           image=image,
+                           username='Авторизация')
 
 
 @app.route('/upload', methods=['GET', 'POST'])
@@ -65,29 +86,6 @@ def file_download(id):
 
     # Отправляем файл для скачивания
     return send_file(full_path, as_attachment=True)
-
-
-@login_manager.user_loader
-def load_user(user_id):
-    db_ses = db_session.create_session()
-    return db_ses.get(User, user_id)
-
-
-@app.route('/')
-def index():
-    found = request.args.get('substring')
-    db_sess = db_session.create_session()
-    if current_user.is_authenticated:
-        stuffs = db_sess.query(Stuffs).filter(Stuffs.id >= 0)
-        image = db_sess.query(Image).filter(Image.id >= 0)
-    else:
-        stuffs = db_sess.query(Stuffs).filter(Stuffs.id >= 0)
-        image = db_sess.query(Image).filter(Image.id >= 0)
-    return render_template('index.html',
-                           title='DS',
-                           stuffs=stuffs,
-                           image=image,
-                           username='Авторизация')
 
 
 @app.route('/register', methods=['GET', 'POST'])
