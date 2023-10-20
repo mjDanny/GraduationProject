@@ -8,8 +8,9 @@ pip install -r requirements.txt
 После запуска реклама выводит ссылку на страницу: http://127.0.0.1:5000 после перехода на неё, открывается главная
 страница сайта:
 <div align="center">
-<img src="mdimages/image1.png">
+<img src="mdimages/image01.png">
 </div>
+
 <div align="center">
 <img src="mdimages/image2.png">
 </div>
