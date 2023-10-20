@@ -1,19 +1,21 @@
 {% extends 'admin/base_admin.html' %}
 
 {% block content %}
+<div class="container" align="center">
   <h1>Редактирование файла</h1>
 
-  <form method="POST" action="{{ url_for('.edit_file', file_id=file.id) }}">
+  <form  method="POST" action="{{ url_for('.edit_file', file_id=file.id) }}">
     <div class="input-group">
       <label for="name">Название файла:</label>
-      <input type="text" name="name" id="name" value="{{ file.name }}" required>
+      <input  type="text" name="name" id="name" value="{{ file.name }}" required>
     </div>
     <div class="input-group">
       <label for="price">Price:</label>
-      <input class="form-control" type="number" name="price" id="price">
+      <input style="width: 300px" class="form-control" type="text" name="price" id="price">
     </div>
     <div class="input-group">
       <button type="submit">Сохранить</button>
     </div>
   </form>
+  </div>
 {% endblock %}
