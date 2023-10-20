@@ -10,7 +10,7 @@ pip install -r requirements.txt
 <div align="center">
 <img src="mdimages/image01.png">
 </div>
-
+Низ Главной страницы:
 <div align="center">
 <img src="mdimages/image2.png">
 </div>
